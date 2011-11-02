@@ -1,0 +1,31 @@
+#!/bin/bash
+
+dateName=`date "+%y%m%d%H%M%S"`
+
+#name tarball appropriately
+if [ "$1" == -s ]
+then
+	echo "Creating stash..."
+	tarball="${dateName}_stash.tar.gz"
+	saveType="Stash"
+else
+	echo "Creating backup..."
+	tarball="${dateName}.tar.gz"
+	saveType="Backup"
+fi
+
+#zip files except ones specified in ignore file
+tar -pczf "$tarball" --exclude "$tarball" -X "./.bakignore" "./"
+
+#copy tarball to specified directories
+cat "./.bakdirs" | while read d
+do
+	cp -fp $tarball "$d"
+done
+
+#remove tarball from current directory
+rm -f $tarball
+
+echo "$saveType complete!"
+
+exit 0

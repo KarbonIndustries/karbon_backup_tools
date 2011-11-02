@@ -1,0 +1,19 @@
+#!/bin/bash
+
+bundleDate=`date "+%y%m%d%H%M%S"`
+bundle="${bundleDate}_bundle.tar.gz"
+
+echo "Creating bundle..."
+
+tar -pczf "$bundle" --exclude "$bundle" -I "./.buninclude"
+
+cat "./.bundirs" | while read d
+do
+	cp -fp $bundle "$d"
+done
+
+rm -f $bundle
+
+echo "Bundle $bundleDate complete!"
+
+exit 0
