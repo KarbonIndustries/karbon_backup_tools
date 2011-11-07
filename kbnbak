@@ -14,18 +14,23 @@ else
 	saveType="Backup"
 fi
 
-#zip files except ones specified in ignore file
-tar -pczf "$tarball" --exclude "$tarball" -X "./.bakignore" "./"
+#create hidden folder for tarball while gzipping
+tmpBakDir='kbn_tmp'
+mkdir "$tmpBakDir"
+SetFile -a V "$tmpBakDir"
+
+#zip files except ones specified to ignore
+tar -pczf "$tmpBakDir/$tarball" --exclude "$tmpBakDir" -X "./.bakignore" "./"
 
 #copy tarball to specified directories
 cat "./.bakdirs" | while read d
 do
-	cp -fp $tarball "$d"
+	cp -fp "$tmpBakDir/$tarball" "$d"
 done
 
 #remove tarball from current directory
-rm -f $tarball
+rm -fR "$tmpBakDir"
 
-echo "$saveType complete!"
+echo "$saveType $dateName complete!"
 
 exit 0

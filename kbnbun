@@ -2,17 +2,20 @@
 
 bundleDate=`date "+%y%m%d%H%M%S"`
 bundle="${bundleDate}_bundle.tar.gz"
+tmpBunDir='tmpBunDir'
+mkdir "$tmpBunDir"
+SetFile -a V "$tmpBunDir"
 
 echo "Creating bundle..."
 
-tar -pczf "$bundle" --exclude "$bundle" -I "./.buninclude"
+tar -pczf "$tmpBunDir/$bundle" --exclude "$tmpBunDir" -I "./.buninclude"
 
 cat "./.bundirs" | while read d
 do
-	cp -fp $bundle "$d"
+	cp -fp "$tmpBunDir/$bundle" "$d"
 done
 
-rm -f $bundle
+rm -fR "$tmpBunDir"
 
 echo "Bundle $bundleDate complete!"
 
